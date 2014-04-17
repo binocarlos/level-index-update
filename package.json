@@ -1,7 +1,7 @@
 {
   "name": "level-index-update",
   "description": "A module to save a document into leveldb where the old indexes are removed in the same batch as the new ones are inserted",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "scripts": {
     "test": "tape test/*.js"
@@ -23,9 +23,7 @@
     "url": "https://github.com/binocarlos/level-index-update/issues"
   },
   "homepage": "https://github.com/binocarlos/level-index-update",
-  "dependencies": {
-    
-  },
+  "dependencies": {},
   "devDependencies": {
     "tape": "^2.12.3",
     "level-sublevel": "^5.2.0",
