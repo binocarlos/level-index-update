@@ -5,11 +5,9 @@ level-index-update
 
 A module to save a document into leveldb where the old indexes are removed in the same batch as the new ones are inserted
 
-It is good for a document database where the values of a document will change.
+It loads the old document and creates a single batch of 'del' and 'put' commands from the mapper function you provide.
 
-This version loads the old document and creates a single batch of 'del' and 'put' commands from the mapper function you provide.
-
-This should be done with an immutable append only collection but one step at a time : )
+This is a cumbersome way to do it and there are limitations but hey - life is short and suggestions are welcome : )
 
 ## example
 
@@ -22,7 +20,7 @@ var db = sub(level(__dirname + '/pathdb', {
 	 valueEncoding: 'json'
 }))
 
-var save = indexupdate(db.sublevel('docs'), '_indexes', function(key, value, emit){
+var indexer = indexupdate(db.sublevel('docs'), '_indexes', function(key, value, emit){
 
 	// you can emit multiple indexes per value
 	emit(['color', value.color])
@@ -30,7 +28,7 @@ var save = indexupdate(db.sublevel('docs'), '_indexes', function(key, value, emi
 
 })
 
-save('/my/path', {
+indexer.save('/my/path', {
 	height:50,
 	color:'red'
 }, function(err, batch){
@@ -42,7 +40,7 @@ save('/my/path', {
 
 	// the index for red is inserted
 
-	save('/my/path', {
+	indexer.save('/my/path', {
 		height:45,
 		color:'blue'
 	}, function(err, batch){
@@ -62,11 +60,11 @@ save('/my/path', {
 
 ## api
 
-### var updater = indexupdate(db, [indexpath], mapper)
+### var indexer = indexupdate(db, [indexpath], mapper)
 
 Create an updater function by passing a leveldb, an optional path to write the indexes (defaults to 'updateindex') and a mapper function that will emit the index fields and values for each value
 
-### updater(key, value, callback(err, batch))
+### indexer.save(key, value, callback(err, batch))
 
 Run the updater function by passing the key and the value for the update.
 

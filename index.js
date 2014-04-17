@@ -13,7 +13,15 @@ function UpdateIndex(db, indexDb, mapper) {
   if('string' === typeof indexDb)
     indexDb = db.sublevel(indexDb)
 
-  return function save(key, value, callback){
+  var indexer = {}
+
+  indexer.manifest = {
+    methods: {
+      save: { type: 'async' }
+    }
+  };
+
+  indexer.save = function save(key, value, callback){
     db.get(key, function(err, oldvalue){
       var batch = [{
         type:'put',
@@ -42,5 +50,7 @@ function UpdateIndex(db, indexDb, mapper) {
       })
     })
   }
+
+  return indexer;
 }
 
