@@ -35,7 +35,7 @@ save('/my/path', {
 	color:'red'
 }, function(err, batch){
 
-	console.log(batch);
+	console.dir(batch);
 	// [{type:'put', key:'/my/path', value:'{color:"red",height:50}'},
 	// {type:'put', key:'color~red~/my/path'},
 	// {type:'put', key:'heightcolor~red~50~/my/path'}]
@@ -47,11 +47,11 @@ save('/my/path', {
 		color:'blue'
 	}, function(err, batch){
 
-		console.log(batch);
+		console.dir(batch);
 		// {type:'put', key:'/my/path', value:'{color:"blue",height:45}'},
-		// {type:'del', key:'color~red~/my/path'}
-		// {type:'del', key:'heightcolor~50~red~/my/path'}]
-		// {type:'put', key:'color~blue~/my/path'}
+		// {type:'del', key:'color~red~/my/path'},
+		// {type:'del', key:'heightcolor~50~red~/my/path'},
+		// {type:'put', key:'color~blue~/my/path'},
 		// {type:'put', key:'heightcolor~45~blue~/my/path'}]
 
 		// the index for red is deleted and the index for blue is inserted
@@ -64,7 +64,7 @@ save('/my/path', {
 
 ### var updater = indexupdate(db, [indexpath], mapper)
 
-Create an updater function by passing a leveldb, an optional path to write the indexes (defaults to '_indexes') and a mapper function that will emit the index fields and values for each value
+Create an updater function by passing a leveldb, an optional path to write the indexes (defaults to 'updateindex') and a mapper function that will emit the index fields and values for each value
 
 ### updater(key, value, callback(err, batch))
 
