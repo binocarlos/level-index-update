@@ -1,7 +1,7 @@
 {
   "name": "level-index-update",
   "description": "A module to save a document into leveldb where the old indexes are removed in the same batch as the new ones are inserted",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "index.js",
   "scripts": {
     "test": "tape test/*.js"
