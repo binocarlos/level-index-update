@@ -5,7 +5,7 @@ var updateindex   = require('../')
 var tape     = require('tape')
 
 
-var db = sublevel(level('level-index-update--simple', {encoding: 'json'}))
+var db = sublevel(level('level-index-update--batch', {encoding: 'json'}))
 
 var indexer = updateindex(db, function(key, value, emit){
   emit(['color', value.color]);

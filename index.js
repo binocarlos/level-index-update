@@ -30,11 +30,13 @@ function UpdateIndex(db, indexDb, mapper) {
       }]
 
       function emitter(type){
-        return function emit(values){
-          var indexKey = (values || []).concat(key).join('~')
+        return function emit(values, nopath){
+          if(!nopath){
+            values = (values || []).concat(key)
+          }
           batch.push({
             type:type,
-            key:indexKey,
+            key:(values || []).join('~'),
             value:0
           })
         }
