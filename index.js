@@ -34,10 +34,10 @@ function UpdateIndex(db, indexDb, mapper) {
     }
 
     if(oldvalue)
-      mapper(command.key, oldvalue, emitter('del'))
+      mapper(command.key, oldvalue, emitter('del'), 'del')
 
     if(command.value)
-      mapper(command.key, command.value, emitter('put'))
+      mapper(command.key, command.value, emitter('put'), 'put')
 
     return batch;
   }

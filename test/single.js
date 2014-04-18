@@ -7,12 +7,16 @@ var tape     = require('tape')
 
 var db = sublevel(level('level-index-update--single', {encoding: 'json'}))
 
-var indexer = updateindex(db, 'singleindex', function(key, value, emit){
-  emit(['color', value.color]);
-  emit(['heightcolor', value.height, value.color])
-})
+
 
 tape('insert, update and read single documents', function(t){
+
+  var indexer = updateindex(db, 'singleindex', function(key, value, emit, type){
+    t.equal((type=='put' || type=='del'), true)
+    emit(['color', value.color]);
+    emit(['heightcolor', value.height, value.color])
+  })
+
   indexer.save('myfavoritecolor', {color:'red',height:50}, function(err, batch){
     if(err)
       throw err
