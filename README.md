@@ -7,7 +7,9 @@ A module to save a document into leveldb where the old indexes are removed in th
 
 It loads the old document and creates a single batch of 'del' and 'put' commands from the mapper function you provide.
 
-This is a cumbersome way to do it and there are limitations but hey - life is short and suggestions are welcome : )
+It can also expand a batch of multiple documents into a single larger batch containing the index 'put' and 'del' commands for each document.
+
+This is a cumbersome way to do it and there are limitations but hey - life is short and suggestions (like how to manage an immutable collection of indexes for changing values) are welcome : )
 
 ## example
 
@@ -58,6 +60,31 @@ indexer.save('/my/path', {
 })
 ```
 
+You can also insert a batch of documents and it will auto-expand the batch for the indexes:
+
+```js
+indexer.batch([{
+	key:'/my/path',
+	color:'red',
+	height:50
+},{
+	key:'/my/otherpath',
+	color:'blue',
+	height:45
+}], function(err, batch){
+	console.dir(batch);
+
+	// [{type:'put', key:'/my/path', value:'{color:"blue",height:45}'},
+	// {type:'put', key:'color~red~/my/path'},
+	// {type:'put', key:'heightcolor~50~red~/my/path'},
+	// {type:'put', key:'/my/otherpath', value:'{color:"blue",height:45}'},
+	// {type:'put', key:'color~blue~/my/otherpath'},
+	// {type:'put', key:'heightcolor~45~blue~/my/otherpath'}],
+
+})
+
+```
+
 ## api
 
 ### var indexer = indexupdate(db, [indexpath], mapper)
@@ -70,13 +97,35 @@ Run the updater function by passing the key and the value for the update.
 
 The callback will be passed the batch that was inserted into the database.
 
-### mapper(key, value, emit([values]))
+### indexer.expandBatch(arr, callback(err, batch))
+
+Pass a batch of commands and it will convert into a larger batch with all the indexes for each 'put' and 'del' resolved.
+
+### indexer.batch(arr, callback(err, batch))
+
+Uses expandBatch and then actually runs the batch
+
+### mapper(key, value, emit([values], manualkey))
 
 The mapper function is called for each update - once for the old values and once for the new values
 
-call emit with an array of values to index based on the passed object
+Call emit with an array of values to index based on the passed object
 
-you can call emit many times per object - the key will be added to the index entry automatically
+You can call emit many times per object - the key will be added to the index entry automatically
+
+Pass an array of values to the indexer - the key will automatically be appended.
+
+If you want to manually manage the index but still want the batch behavious, pass true as the second argument to emit:
+
+```js
+
+var indexer = indexupdate(db.sublevel('docs'), '_indexes', function(key, value, emit){
+
+	// manually manage the index structure
+	emit(['color', value.color, key, '__', new Date().getTime()], true)
+
+})
+```
 
 ## todo
 
