@@ -39,7 +39,19 @@ function UpdateIndex(db, indexDb, mapper) {
     if(command.value)
       mapper(command.key, command.value, emitter('put'), 'put')
 
-    return batch;
+    var seen = {}
+    var newbatch = []
+
+    for(var i=batch.length-1; i>=0; i--){
+      var cmd = batch[i]
+      batchkey = cmd.type + cmd.key
+      if(!seen[batchkey]){
+        seen[batchkey] = true
+        newbatch.unshift(batch[i])
+      }
+    }
+
+    return newbatch;
   }
 
   var indexer = {}
