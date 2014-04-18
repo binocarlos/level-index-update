@@ -49,7 +49,8 @@ function UpdateIndex(db, indexDb, mapper) {
   indexer.manifest = {
     methods: {
       save: { type: 'async' },
-      savebatch: { type: 'async' }
+      batch: { type: 'async' },
+      expandBatch: { type: 'async' }
     }
   };
 
