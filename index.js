@@ -56,7 +56,8 @@ function UpdateIndex(db, indexDb, mapper) {
 
   var indexer = {}
 
-  indexer.db = indexDb;
+  indexer.db = indexDb
+  indexer._db = db
 
   indexer.manifest = {
     methods: {
